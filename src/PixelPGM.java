@@ -1,42 +1,25 @@
+/**
+ * @author Antony, Abdoulaye et Sèdrick
+ */
 public class PixelPGM extends Pixel {
-    private int rouge;
-    private int vert;
-    private int bleu;
-
+    private int teinte;
 
     /**
-     * Constructeur de PixelPGM avec Attribut
-     * @param ligne
-     * @param colonne
-     * @param rouge
-     * @param vert
-     * @param bleu
+     * Constructeur pour un pixel gris
+     * @param ligne Position Y
+     * @param colonne Position X
+     * @param teinte Valeur numérique
      */
-    PixelPGM(int ligne, int colonne, int rouge, int vert, int bleu) {
+    PixelPGM(int ligne, int colonne, int teinte) {
         super(ligne, colonne);
+        this.teinte = teinte;
     }
 
-    public int getRouge() {
-        return rouge;
+    public int getTeinte() {
+        return teinte;
     }
 
-    public int getVert() {
-        return vert;
-    }
-
-    public int getBleu() {
-        return bleu;
-    }
-
-    public void setRouge(int rouge) {
-        this.rouge = rouge;
-    }
-
-    public void setVert(int vert) {
-        this.vert = vert;
-    }
-
-    public void setBleu(int bleu) {
-        this.bleu = bleu;
+    public void setTeinte(int teinte) {
+        this.teinte = teinte;
     }
 }
