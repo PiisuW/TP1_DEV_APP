@@ -139,11 +139,6 @@ public class ImagePPM extends Image {
     }
 
     @Override
-    public void copier(Image copie1, Image copie2) {
-
-    }
-
-    @Override
     public void eclaircir_noircir(int v) {
 
     }

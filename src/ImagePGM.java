@@ -130,13 +130,6 @@ public class ImagePGM extends Image {
     }
 
     @Override
-    public void copier(Image copie1, Image copie2)
-            throws ExceptionImagesIdentiques {
-
-
-    }
-
-    @Override
     public void eclaircir_noircir(int v) {
 
     }
