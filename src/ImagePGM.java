@@ -1,3 +1,5 @@
+import exceptions.ExceptionImagesIdentiques;
+
 /**
  * Implémentation de la bibliothèque pour image avec tons de gris
  * @author Antony, Abdoulaye et Sèdrick
@@ -48,7 +50,9 @@ public class ImagePGM extends Image {
     }
 
     @Override
-    public void copier(Image copie) {
+    public void copier(Image copie1, Image copie2)
+            throws ExceptionImagesIdentiques {
+
 
     }
 
@@ -93,5 +97,13 @@ public class ImagePGM extends Image {
     @Override
     public Pixel couleur_preponderante(){
         return null;
+    }
+
+    public PixelPGM[][] getMatrice() {
+        return matrice;
+    }
+
+    public void setMatrice(PixelPGM[][] matrice) {
+        this.matrice = matrice;
     }
 }

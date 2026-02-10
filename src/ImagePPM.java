@@ -49,7 +49,7 @@ public class ImagePPM extends Image {
     }
 
     @Override
-    public void copier(Image copie) {
+    public void copier(Image copie1, Image copie2) {
 
     }
 
@@ -94,5 +94,13 @@ public class ImagePPM extends Image {
     @Override
     public Pixel couleur_preponderante(){
         return null;
+    }
+
+    public PixelPPM[][] getMatrice(){
+        return matrice;
+    }
+
+    public void setMatrice(PixelPPM[][] matrice){
+        this.matrice = matrice;
     }
 }

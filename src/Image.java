@@ -1,3 +1,5 @@
+import exceptions.ExceptionImagesIdentiques;
+
 /**
  * Classe abstraite bibliothèque de référence pour les fonctions de ImagePGM et ImagePPM
  * @author Antony, Abdoulaye et Sèdrick
@@ -23,9 +25,33 @@ public abstract class Image {
     // Traitement
     /**
      * Copie l'image pour en faire une deuxième identique à la première
-     * @param copie L'image copier
+     * @param copie1 L'objet {@link Image} source de la copie
+     * @param copie2 L'objet {@link Image} destination de la copie
      */
-    public abstract void copier(Image copie);
+    public static void copier(Image copie1, Image copie2) throws ExceptionImagesIdentiques {
+        if (copie1.sont_identiques(copie2)) {
+            throw  new ExceptionImagesIdentiques("les deux images sont identiques");
+        } else if (copie1.getClass() == Image.class && (copie1.getClass() != ImagePGM.class && copie1.getClass() != ImagePPM.class)) {
+            //throw new ExceptionImageClassNonExistante <-- a creer
+        } else{
+
+            int copie1Hauteur = copie1.getHauteur();
+            int copie1Largeur = copie1.getLargeur();
+
+            if (copie1.getClass() == ImagePGM.class) {
+                copie2 = new ImagePGM(copie1Largeur, copie1Hauteur, copie1.getValeurMax());
+
+                PixelPGM[][] matriceCopie1 = ((ImagePGM) copie1).getMatrice();
+                ((ImagePGM) copie2).setMatrice(matriceCopie1);
+            }
+            else if (copie1.getClass() == ImagePPM.class) {
+                copie2 = new ImagePPM(copie1Largeur, copie1Hauteur, copie1.getValeurMax());
+
+                PixelPPM[][] matriceCopie1 = ((ImagePPM) copie1).getMatrice();
+                ((ImagePPM) copie2).setMatrice(matriceCopie1);
+            }
+        }
+    };
 
     /**
      * Modifie la luminosité : un v positif assombrit et v négatif éclaircit
