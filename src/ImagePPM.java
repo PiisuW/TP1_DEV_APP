@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
 /**
  * Implémentation de la bibliothèque pour les images en couleurs
  * @author Antony, Abdoulaye et Sèdrick
@@ -40,12 +46,96 @@ public class ImagePPM extends Image {
 
     @Override
     public void lire(String fichier) {
+        try {
+            File f = new File(fichier);
+            Scanner sc = new Scanner(f);
+
+            String magic = "";
+            int largeur;
+            int hauteur;
+            int max;
+
+            while (sc.hasNext("#")) {
+                sc.nextLine();
+            }
+            magic = sc.next();
+            if (magic.equals("P3")) {
+                this.largeur = sc.nextInt();
+                this.hauteur = sc.nextInt();
+                this.valeurMax = sc.nextInt();
+
+                this.matrice = new PixelPPM[this.hauteur][this.largeur];
+                for (int i = 0; i < this.hauteur; i++) {
+                    for (int j = 0; j < this.largeur; j++) {
+                        int r = sc.nextInt();
+                        int g = sc.nextInt();
+                        int b = sc.nextInt();
+
+                        this.matrice[i][j] = new PixelPPM(i,j,r,g,b);
+
+                    }
+                }
+            } else {
+                throw new RuntimeException();
+            }
+
+
+            sc.close();
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
     @Override
     public void ecrire(String fichier) {
+        try {
+            File f = new File(fichier);
+            PrintWriter pw = new PrintWriter(f);
 
+
+            pw.println("P3");
+            pw.println(this.largeur + " " + this.hauteur);
+            pw.println(this.valeurMax);
+
+            int nbCaracteresLigne = 0;
+
+
+
+            for (int i = 0; i < this.hauteur; i++) {
+                for (int j = 0; j < this.largeur; j++) {
+
+                    PixelPPM pixel = (PixelPPM) this.matrice[i][j];
+                    int[] couleurs = {pixel.getRouge(), pixel.getVert(), pixel.getBleu()};
+
+                    for (int valeur : couleurs) {
+                        String s = valeur + " ";
+
+                        if (nbCaracteresLigne + s.length() > 70) {
+                            pw.print("\n");
+                            nbCaracteresLigne = 0;
+                        }
+
+                        pw.print(s);
+                        nbCaracteresLigne += s.length();
+                    }
+
+
+
+
+
+
+                }
+
+
+            }
+
+            pw.close();
+
+        } catch (IOException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
     }
 
     @Override

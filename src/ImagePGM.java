@@ -2,6 +2,13 @@
  * Implémentation de la bibliothèque pour image avec tons de gris
  * @author Antony, Abdoulaye et Sèdrick
  */
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
+import java.io.File;
+import java.io.PrintWriter;
+
 public class ImagePGM extends Image {
 
     private int largeur;
@@ -39,11 +46,84 @@ public class ImagePGM extends Image {
 
     @Override
     public void lire(String fichier) {
+        try {
+            File f = new File(fichier);
+            Scanner sc = new Scanner(f);
+
+            String magic = "";
+            int largeur;
+            int hauteur;
+            int max;
+
+            while (sc.hasNext("#")) {
+                    sc.nextLine();
+            }
+            magic = sc.next();
+            if (magic.equals("P2")) {
+                this.largeur = sc.nextInt();
+                this.hauteur = sc.nextInt();
+                this.valeurMax = sc.nextInt();
+
+                this.matrice = new PixelPGM[this.hauteur][this.largeur];
+                for (int i = 0; i < this.hauteur; i++) {
+                    for (int j = 0; j < this.largeur; j++) {
+                        int teinteLue = sc.nextInt();
+
+                        this.matrice[i][j] = new PixelPGM(i,j,teinteLue);
+
+                    }
+                }
+            } else {
+                throw new RuntimeException();
+            }
+
+
+            sc.close();
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 
     @Override
     public void ecrire(String fichier) {
+        try {
+            File f = new File(fichier);
+            PrintWriter pw = new PrintWriter(f);
+
+
+            pw.println("P2");
+            pw.println(this.largeur + " " + this.hauteur);
+            pw.println(this.valeurMax);
+
+            int nbCaracteresLigne = 0;
+
+
+
+            for (int i = 0; i < this.hauteur; i++) {
+                for (int j = 0; j < this.largeur; j++) {
+
+                    String s = this.matrice[i][j].getTeinte() + " ";
+
+                    if (nbCaracteresLigne + s.length() > 70) {
+                        pw.print("\n");
+                        nbCaracteresLigne = 0;
+                    }
+
+                    pw.print(s);
+                    nbCaracteresLigne += s.length();
+                }
+
+
+            }
+
+            pw.close();
+
+        } catch (IOException e) {
+           System.out.println("Erreur : " + e.getMessage());
+        }
 
     }
 
