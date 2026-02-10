@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"<Unnamed>","l":"Image"},{"p":"<Unnamed>","l":"ImagePGM"},{"p":"<Unnamed>","l":"ImagePPM"},{"p":"<Unnamed>","l":"Main"},{"p":"<Unnamed>","l":"Pixel"},{"p":"<Unnamed>","l":"PixelPGM"},{"p":"<Unnamed>","l":"PixelPPM"}];updateSearchResults();
