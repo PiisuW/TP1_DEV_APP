@@ -143,9 +143,34 @@ public class ImagePPM extends Image {
 
     }
 
+    /**
+     * Cree une nouvelle matrice temporaire 2 dimensions de {@link PixelPPM} en inversant hauteur/largeur
+     * Insere ensuite les donnees de la matrice actuelle de l'image vers la matrice temporaire en modifiant la position des pixels
+     * La matrice temporaire devient donc une nouvelle matrice identique a l'ancienne, mais ayant subit une rotation de 90 degres vers la gauche
+     * La matrice temporaire devient la nouvelle matrice de l'image de l'objet
+     */
     @Override
     public void pivoter90(){
+        int nouvelleLargeur = this.hauteur;
+        int nouvelleHauteur = this.largeur;
 
+        PixelPPM[][] tempMatrice = new PixelPPM[nouvelleHauteur][nouvelleLargeur];
+        for (int i = 0; i < nouvelleHauteur; i++) {
+            for (int j = 0; j < nouvelleLargeur; j++) {
+                tempMatrice[i][j] =
+                        new PixelPPM(   //Accede la position du pixel correspondant dans l'ancienne matrice
+                                i,
+                                j,
+                                this.matrice[j][this.largeur - 1 - i].getRouge(),
+                                this.matrice[j][this.largeur - 1 - i].getVert(),
+                                this.matrice[j][this.largeur - 1 - i].getBleu());
+            }
+        }
+
+        this.matrice = tempMatrice;
+
+        this.hauteur = nouvelleHauteur;
+        this.largeur = nouvelleLargeur;
     }
 
     /**

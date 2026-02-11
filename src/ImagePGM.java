@@ -142,13 +142,12 @@ public class ImagePGM extends Image {
         PixelPGM[][] tempMatrice = new PixelPGM[nouvelleHauteur][nouvelleLargeur];
         for (int i = 0; i < nouvelleHauteur; i++) {
             for (int j = 0; j < nouvelleLargeur; j++) {
-                tempMatrice[i][j] =
-                        new PixelPGM(   //Accede la position du pixel correspondant dans l'ancienne matrice
-                                this.matrice[j][this.largeur - 1 - i].getLigne(),
-                                this.matrice[j][this.largeur - 1 - i].getColonne(),
-                                this.matrice[j][this.largeur - 1 - i].getTeinte());
+                tempMatrice[i][j] =         //accede a la position dans l'ancienne matrice
+                        new PixelPGM(i, j, this.matrice[j][this.largeur - 1 - i].getTeinte());
             }
         }
+
+        this.matrice = tempMatrice;
 
         this.hauteur = nouvelleHauteur;
         this.largeur = nouvelleLargeur;
@@ -188,7 +187,7 @@ public class ImagePGM extends Image {
     }
 
     public PixelPGM[][] getMatrice() {
-        return matrice;
+        return this.matrice;
     }
 
     public void setMatrice(PixelPGM[][] matrice) {
