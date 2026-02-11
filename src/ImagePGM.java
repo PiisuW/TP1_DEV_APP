@@ -136,7 +136,22 @@ public class ImagePGM extends Image {
 
     @Override
     public void pivoter90(){
+        int nouvelleLargeur = this.hauteur;
+        int nouvelleHauteur = this.largeur;
 
+        PixelPGM[][] tempMatrice = new PixelPGM[nouvelleHauteur][nouvelleLargeur];
+        for (int i = 0; i < nouvelleHauteur; i++) {
+            for (int j = 0; j < nouvelleLargeur; j++) {
+                tempMatrice[i][j] =
+                        new PixelPGM(   //Accede la position du pixel correspondant dans l'ancienne matrice
+                                this.matrice[j][this.largeur - 1 - i].getLigne(),
+                                this.matrice[j][this.largeur - 1 - i].getColonne(),
+                                this.matrice[j][this.largeur - 1 - i].getTeinte());
+            }
+        }
+
+        this.hauteur = nouvelleHauteur;
+        this.largeur = nouvelleLargeur;
     }
 
     /**
