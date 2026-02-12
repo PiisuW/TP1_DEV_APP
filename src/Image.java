@@ -1,4 +1,6 @@
+import exceptions.ExceptionEcritureImage;
 import exceptions.ExceptionImagesIdentiques;
+import exceptions.ExceptionLectureImage;
 
 /**
  * Classe abstraite bibliothèque de référence pour les fonctions de ImagePGM et ImagePPM
@@ -14,13 +16,13 @@ public abstract class Image {
      * Charge les données d'un fichier PGM ou PPM dans l'objet Image
      * @param fichier le chemin vers le fichier à lire
      */
-    public abstract void lire(String fichier);
+    public abstract void lire(String fichier) throws ExceptionLectureImage;
 
     /**
      * Sauvegarde l'image actuelle dans un fichier au format ASCII
      * @param fichier Le nom du fichier de destination
      */
-    public abstract void ecrire(String fichier);
+    public abstract void ecrire(String fichier) throws ExceptionEcritureImage;
 
     // Traitement
     /**

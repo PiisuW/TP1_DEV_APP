@@ -1,8 +1,12 @@
+import exceptions.ExceptionEcritureImage;
+import exceptions.ExceptionLectureImage;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.HashMap;
 
 /**
  * Implémentation de la bibliothèque pour les images en couleurs
@@ -45,17 +49,14 @@ public class ImagePPM extends Image {
 
 
     @Override
-    public void lire(String fichier) {
+    public void lire(String fichier) throws ExceptionLectureImage {
         try {
             File f = new File(fichier);
             Scanner sc = new Scanner(f);
 
             String magic = "";
-            int largeur;
-            int hauteur;
-            int max;
 
-            while (sc.hasNext("#")) {
+            while (sc.hasNext("#.*")) {
                 sc.nextLine();
             }
             magic = sc.next();
@@ -76,20 +77,18 @@ public class ImagePPM extends Image {
                     }
                 }
             } else {
-                throw new RuntimeException();
+                throw new ExceptionLectureImage("Le fichier n'est pas au format P3 (format lu : " + magic + ")");
             }
-
 
             sc.close();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new ExceptionLectureImage("Impossible de lire dans le fichier : " + e.getMessage());
         }
-
     }
 
     @Override
-    public void ecrire(String fichier) {
+    public void ecrire(String fichier) throws ExceptionEcritureImage {
         try {
             File f = new File(fichier);
             PrintWriter pw = new PrintWriter(f);
@@ -121,11 +120,6 @@ public class ImagePPM extends Image {
                         nbCaracteresLigne += s.length();
                     }
 
-
-
-
-
-
                 }
 
 
@@ -134,13 +128,33 @@ public class ImagePPM extends Image {
             pw.close();
 
         } catch (IOException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            throw new ExceptionEcritureImage("Impossible d'écrire dans le fichier : " + e.getMessage());
         }
     }
 
     @Override
     public void eclaircir_noircir(int v) {
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
 
+                PixelPPM p = matrice[i][j];
+                int r = p.getRouge() - v;
+                int g = p.getVert() - v;
+                int b = p.getBleu() - v;
+
+                if (r < 0) r = 0;
+                if (r > valeurMax) r = valeurMax;
+                if (g < 0) g = 0;
+                if (g > valeurMax) g = valeurMax;
+                if (b < 0) b = 0;
+                if (b > valeurMax) b = valeurMax;
+
+                p.setRouge(r);
+                p.setVert(g);
+                p.setBleu(b);
+
+            }
+        }
     }
 
     /**
@@ -150,7 +164,7 @@ public class ImagePPM extends Image {
      * La matrice temporaire devient la nouvelle matrice de l'image de l'objet
      */
     @Override
-    public void pivoter90(){
+    public void pivoter90() {
         int nouvelleLargeur = this.hauteur;
         int nouvelleHauteur = this.largeur;
 
@@ -177,24 +191,52 @@ public class ImagePPM extends Image {
      * {@inheritDoc}
      */
     @Override
-    public boolean sont_identiques(Image autre){
-        return false;
+    public boolean sont_identiques(Image autre) {
+        if (!(autre instanceof ImagePPM)) return false;
+
+        ImagePPM img = (ImagePPM) autre;
+
+        if (this.largeur != img.largeur) return false;
+        if (this.hauteur != img.hauteur) return false;
+        if (this.valeurMax != img.valeurMax) return false;
+
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                PixelPPM p1 = this.matrice[i][j];
+                PixelPPM p2 = img.matrice[i][j];
+
+                if (p1 == null || p2 == null) {
+                    if (p1 != p2) {
+                        return false;
+                    }
+                    continue;
+                }
+
+                if (p1.getRouge() != p2.getRouge()) return false;
+                if (p1.getVert() != p2.getVert()) return false;
+                if (p1.getBleu() != p2.getBleu()) return false;
+            }
+        }
+
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Image extraire(int p1, int c1, int p2, int c2){
+    public Image extraire(int p1, int c1, int p2, int c2) {
         return null;
     }
 
     /**
      * Réduit l'image en calculant la moyenne de rouge, vert et bleu
+     *
      * @return Une nouvelle image réduite par la moyenne
      */
     @Override
-    public Image reduire(){
+    public Image reduire() {
         return null;
     }
 
@@ -202,15 +244,43 @@ public class ImagePPM extends Image {
      * {@inheritDoc}
      */
     @Override
-    public Pixel couleur_preponderante(){
-        return null;
+    public Pixel couleur_preponderante() {
+        HashMap<String, Integer> compteur = new HashMap<>();
+
+        int maxCount = -1;
+        int bestI = 0;
+        int bestJ = 0;
+
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                PixelPPM p = matrice[i][j];
+
+                String cle = p.getRouge() + "-" +
+                        p.getVert() + "-" +
+                        p.getBleu();
+
+                int count = compteur.getOrDefault(cle, 0) + 1;
+                compteur.put(cle, count);
+
+                if (count > maxCount) {
+                    maxCount = count;
+                    bestI = i;
+                    bestJ = j;
+                }
+            }
+        }
+
+        return matrice[bestI][bestJ];
     }
 
-    public PixelPPM[][] getMatrice(){
+    public PixelPPM[][] getMatrice() {
         return matrice;
     }
 
-    public void setMatrice(PixelPPM[][] matrice){
+    public void setMatrice(PixelPPM[][] matrice) {
         this.matrice = matrice;
     }
 }
+
+

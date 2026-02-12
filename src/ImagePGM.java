@@ -1,4 +1,6 @@
+import exceptions.ExceptionEcritureImage;
 import exceptions.ExceptionImagesIdentiques;
+import exceptions.ExceptionLectureImage;
 
 /**
  * Implémentation de la bibliothèque pour image avec tons de gris
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
+
 
 public class ImagePGM extends Image {
 
@@ -47,7 +50,7 @@ public class ImagePGM extends Image {
     //Fichier
 
     @Override
-    public void lire(String fichier) {
+    public void lire(String fichier) throws ExceptionLectureImage {
         try {
             File f = new File(fichier);
             Scanner sc = new Scanner(f);
@@ -76,21 +79,21 @@ public class ImagePGM extends Image {
                     }
                 }
             } else {
-                throw new RuntimeException();
+                throw new ExceptionLectureImage("Le fichier n'est pas au format P2 (format lu : " + magic + ")");
             }
 
 
             sc.close();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new ExceptionLectureImage("Impossible de lire dans le fichier : " + e.getMessage());
         }
 
 
     }
 
     @Override
-    public void ecrire(String fichier) {
+    public void ecrire(String fichier) throws ExceptionEcritureImage {
         try {
             File f = new File(fichier);
             PrintWriter pw = new PrintWriter(f);
@@ -124,14 +127,28 @@ public class ImagePGM extends Image {
             pw.close();
 
         } catch (IOException e) {
-           System.out.println("Erreur : " + e.getMessage());
+            throw new ExceptionEcritureImage("Impossible d'écrire' dans le fichier : " + e.getMessage());
         }
 
     }
 
     @Override
     public void eclaircir_noircir(int v) {
+        if (v > this.valeurMax / 2) v = this.valeurMax / 2;
+        if (v < -(this.valeurMax / 2)) v = -(this.valeurMax / 2);
 
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                int t = matrice[i][j].getTeinte();
+                t = t - v;
+
+                if (t < 0) t = 0;
+                if (t > valeurMax) t = valeurMax;
+
+                matrice[i][j].setTeinte(t);
+            }
+        }
     }
 
     @Override
@@ -153,12 +170,39 @@ public class ImagePGM extends Image {
         this.largeur = nouvelleLargeur;
     }
 
+
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean sont_identiques(Image autre){
-        return false;
+        if (!(autre instanceof ImagePGM)) return false;
+
+        ImagePGM img = (ImagePGM) autre;
+
+        if (this.largeur != img.largeur) return false;
+        if (this.hauteur != img.hauteur) return false;
+        if (this.valeurMax != img.valeurMax) return false;
+
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                PixelPGM p1 = this.matrice[i][j];
+                PixelPGM p2 = img.matrice[i][j];
+
+                if (p1 == null || p2 == null) {
+                    if (p1 != p2) return false;
+                    continue;
+                }
+
+                if (p1.getTeinte() != p2.getTeinte()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -239,7 +283,27 @@ public class ImagePGM extends Image {
      */
     @Override
     public Pixel couleur_preponderante(){
-        return null;
+        int[] compteur = new int[valeurMax + 1];
+
+        int maxCount = -1;
+        int bestI = 0;
+        int bestJ = 0;
+
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                int t = matrice[i][j].getTeinte();
+                compteur[t]++;
+
+                if (compteur[t] > maxCount) {
+                    maxCount = compteur[t];
+                    bestI = i;
+                    bestJ = j;
+                }
+            }
+        }
+
+        return matrice[bestI][bestJ];
     }
 
     public PixelPGM[][] getMatrice() {
