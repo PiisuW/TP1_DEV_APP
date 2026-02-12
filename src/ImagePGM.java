@@ -1,4 +1,6 @@
+import exceptions.ExceptionEcritureImage;
 import exceptions.ExceptionImagesIdentiques;
+import exceptions.ExceptionLectureImage;
 
 /**
  * Implémentation de la bibliothèque pour image avec tons de gris
@@ -47,7 +49,7 @@ public class ImagePGM extends Image {
     //Fichier
 
     @Override
-    public void lire(String fichier) {
+    public void lire(String fichier) throws ExceptionLectureImage {
         try {
             File f = new File(fichier);
             Scanner sc = new Scanner(f);
@@ -76,21 +78,21 @@ public class ImagePGM extends Image {
                     }
                 }
             } else {
-                throw new RuntimeException();
+                throw new ExceptionLectureImage("Le fichier n'est pas au format P2 (format lu : " + magic + ")");
             }
 
 
             sc.close();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new ExceptionLectureImage("Impossible de lire dans le fichier : " + e.getMessage());
         }
 
 
     }
 
     @Override
-    public void ecrire(String fichier) {
+    public void ecrire(String fichier) throws ExceptionEcritureImage {
         try {
             File f = new File(fichier);
             PrintWriter pw = new PrintWriter(f);
@@ -124,7 +126,7 @@ public class ImagePGM extends Image {
             pw.close();
 
         } catch (IOException e) {
-           System.out.println("Erreur : " + e.getMessage());
+            throw new ExceptionEcritureImage("Impossible d'écrire' dans le fichier : " + e.getMessage());
         }
 
     }

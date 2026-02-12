@@ -1,3 +1,6 @@
+import exceptions.ExceptionEcritureImage;
+import exceptions.ExceptionLectureImage;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,17 +48,14 @@ public class ImagePPM extends Image {
 
 
     @Override
-    public void lire(String fichier) {
+    public void lire(String fichier) throws ExceptionLectureImage {
         try {
             File f = new File(fichier);
             Scanner sc = new Scanner(f);
 
             String magic = "";
-            int largeur;
-            int hauteur;
-            int max;
 
-            while (sc.hasNext("#")) {
+            while (sc.hasNext("#.*")) {
                 sc.nextLine();
             }
             magic = sc.next();
@@ -76,20 +76,19 @@ public class ImagePPM extends Image {
                     }
                 }
             } else {
-                throw new RuntimeException();
+                throw new ExceptionLectureImage("Le fichier n'est pas au format P3 (format lu : " + magic + ")");
             }
-
 
             sc.close();
 
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new ExceptionLectureImage("Impossible de lire dans le fichier : " + e.getMessage());
         }
 
     }
 
     @Override
-    public void ecrire(String fichier) {
+    public void ecrire(String fichier) throws ExceptionEcritureImage {
         try {
             File f = new File(fichier);
             PrintWriter pw = new PrintWriter(f);
@@ -121,11 +120,6 @@ public class ImagePPM extends Image {
                         nbCaracteresLigne += s.length();
                     }
 
-
-
-
-
-
                 }
 
 
@@ -134,7 +128,7 @@ public class ImagePPM extends Image {
             pw.close();
 
         } catch (IOException e) {
-            System.out.println("Erreur : " + e.getMessage());
+            throw new ExceptionEcritureImage("Impossible d'écrire dans le fichier : " + e.getMessage());
         }
     }
 
