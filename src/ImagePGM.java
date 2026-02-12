@@ -134,6 +134,9 @@ public class ImagePGM extends Image {
 
     @Override
     public void eclaircir_noircir(int v) {
+        if (v > this.valeurMax / 2) v = this.valeurMax / 2;
+        if (v < -(this.valeurMax / 2)) v = -(this.valeurMax / 2);
+
         for (int i = 0; i < hauteur; i++) {
             for (int j = 0; j < largeur; j++) {
 

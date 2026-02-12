@@ -1,4 +1,5 @@
 import exceptions.ExceptionEcritureImage;
+import exceptions.ExceptionImagesIdentiques;
 import exceptions.ExceptionLectureImage;
 
 /**
@@ -7,51 +8,49 @@ import exceptions.ExceptionLectureImage;
 public class Main {
     public static void main(String[] args) {
 
-
-        // Test de lire et écrire en PPM et PGM
         try {
-            ImagePGM image = new ImagePGM(0, 0, 0);
+            // Test PGM
+            ImagePGM pgm = new ImagePGM(0, 0, 0);
+            pgm.lire("Sherbrooke_COPIE_de_copie.pgm");
+            System.out.println("Tests PGM");
 
-            System.out.println("Début de la lecture...");
-            image.lire("image_test.pgm");
+            // Test couleur prépondérante
+            Pixel pMaxiGris = pgm.couleur_preponderante();
+            System.out.println("Teinte la plus fréquente : " + ((PixelPGM)pMaxiGris).getTeinte());
 
-            if (image.getLargeur() > 0) {
-                System.out.println("VÉRIFICATION RÉUSSITE :");
-                System.out.println("Dimensions : " + image.getLargeur() + " x " + image.getHauteur());
-                System.out.println("Valeur Max : " + image.getValeurMax());
+            // Test pivotement
+            pgm.pivoter90();
+            pgm.ecrire("Sherbrooke_COPIE_de_copie.pgm");
+            System.out.println("Rotation de 90 terminee");
 
-                System.out.println("Écriture de la copie...");
-                image.ecrire("Sherbrooke_COPIE_de_copie.pgm");
+            // Test luminosité (Éclaircir : on passe une valeur négative)
+            pgm.eclaircir_noircir(-50);
+            pgm.ecrire("Sherbrooke_COPIE_de_copie.pgm");
+            System.out.println("Image eclaircie terminer");
 
-                System.out.println("Test terminé ! Vérifie le dossier de ton projet");
-            } else {
-                System.out.println("ATTENTION : L'image semble être vide ou les dimensions sont invalides.");
-            }
+            // TEST PPM
+            ImagePPM ppm = new ImagePPM(0, 0, 0);
+            ppm.lire("Sherbrooke_COPIE_COULEUR.ppm");
+            System.out.println("TEST PPM");
+
+            // Test sont_identiques avec une copie
+            ImagePPM ppmCopie = new ImagePPM(ppm.getLargeur(), ppm.getHauteur(), ppm.getValeurMax());
+            Image.copier(ppm, ppmCopie);
+            System.out.println("Les images sont identiques ? " + ppm.sont_identiques(ppmCopie));
+
+            // Test couleur prépondérante
+            Pixel pMaxCoul = ppm.couleur_preponderante();
+            PixelPPM pcc = (PixelPPM) pMaxCoul;
+            System.out.println("Couleur dominante : Rouge=" + pcc.getRouge() + " Vert=" + pcc.getVert() + " Bleu=" + pcc.getBleu());
+
         } catch (ExceptionLectureImage e) {
             System.err.println("ERREUR DE LECTURE : " + e.getMessage());
         } catch (ExceptionEcritureImage e) {
             System.err.println("Erreur lors de l'écriture : " + e.getMessage());
+        } catch (ExceptionImagesIdentiques e) {
+            System.err.println("Erreur lors d'identification : " + e.getMessage());
         }
 
-        try {
-            ImagePPM imageCouleur = new ImagePPM(0, 0, 0);
 
-            System.out.println("Lecture de l'image PPM (Couleur)...");
-            imageCouleur.lire("image_test.ppm");
-
-            if (imageCouleur.getLargeur() > 0) {
-                System.out.println("Succès ! Image de " + imageCouleur.getLargeur() + "x" + imageCouleur.getHauteur() + " chargée.");
-
-                System.out.println("Écriture de la copie couleur...");
-                imageCouleur.ecrire("Sherbrooke_COPIE_COULEUR.ppm");
-                System.out.println("Fichier 'Sherbrooke_COPIE_COULEUR.ppm' créé !");
-            } else {
-                System.out.println("ATTENTION : L'image semble être vide ou les dimensions sont invalides.");
-            }
-        } catch (ExceptionLectureImage e) {
-            System.err.println("ERREUR DE LECTURE : " + e.getMessage());
-        } catch (ExceptionEcritureImage e) {
-            System.err.println("Erreur lors de l'écriture : " + e.getMessage());
-        }
     }
 }
