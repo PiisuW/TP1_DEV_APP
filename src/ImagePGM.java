@@ -13,6 +13,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
 
+
 public class ImagePGM extends Image {
 
     private int largeur;
@@ -133,7 +134,18 @@ public class ImagePGM extends Image {
 
     @Override
     public void eclaircir_noircir(int v) {
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
 
+                int t = matrice[i][j].getTeinte();
+                t = t - v;
+
+                if (t < 0) t = 0;
+                if (t > valeurMax) t = valeurMax;
+
+                matrice[i][j].setTeinte(t);
+            }
+        }
     }
 
     @Override
@@ -155,13 +167,32 @@ public class ImagePGM extends Image {
         this.largeur = nouvelleLargeur;
     }
 
+            }
+        }
+
+        return true;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean sont_identiques(Image autre){
-        return false;
-    }
+        if (!(autre instanceof ImagePGM)) return false;
+
+        ImagePGM img = (ImagePGM) autre;
+
+        if (this.largeur != img.largeur) return false;
+        if (this.hauteur != img.hauteur) return false;
+        if (this.valeurMax != img.valeurMax) return false;
+
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                if (this.matrice[i][j].getTeinte()
+                        != img.matrice[i][j].getTeinte()) {
+                    return false;
+                }
 
     /**
      * {@inheritDoc}
@@ -185,7 +216,27 @@ public class ImagePGM extends Image {
      */
     @Override
     public Pixel couleur_preponderante(){
-        return null;
+        int[] compteur = new int[valeurMax + 1];
+
+        int maxCount = -1;
+        int bestI = 0;
+        int bestJ = 0;
+
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
+
+                int t = matrice[i][j].getTeinte();
+                compteur[t]++;
+
+                if (compteur[t] > maxCount) {
+                    maxCount = compteur[t];
+                    bestI = i;
+                    bestJ = j;
+                }
+            }
+        }
+
+        return matrice[bestI][bestJ];
     }
 
     public PixelPGM[][] getMatrice() {
