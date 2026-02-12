@@ -1,8 +1,8 @@
 import exceptions.ExceptionEcritureImage;
+import exceptions.ExceptionImagesIdentiques;
 import exceptions.ExceptionLectureImage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -132,6 +132,36 @@ public class ImagePPM extends Image {
         }
     }
 
+    /**
+     * Copie l'objet {@link Image} pour en faire une deuxième identique à la première
+     * @param copie objet {@link Image} resultat de la copie
+     */
+    @Override
+    public void copier(Image copie) throws ExceptionImagesIdentiques {
+        if (this.sont_identiques(copie)) {
+            throw  new ExceptionImagesIdentiques("les deux images sont identiques");
+        }
+        else if (this.getClass() != copie.getClass()) {
+            //throw new ExceptionImageClassIncompatible("Les images sont incompatibles") <-- a creer
+        }
+        else{
+
+            PixelPPM[][] tempMatrice = new PixelPPM[this.hauteur][this.largeur];
+
+            for (int i = 0; i < this.hauteur; i++) {
+                for (int j = 0; j < this.largeur; j++) {
+                    tempMatrice[i][j] =
+                            new PixelPPM(this.getMatrice()[i][j].getLigne(),
+                                    this.getMatrice()[i][j].getColonne(),
+                                    this.getMatrice()[i][j].getRouge(),
+                                    this.getMatrice()[i][j].getVert(),
+                                    this.getMatrice()[i][j].getBleu());
+                }
+            }
+            ((ImagePPM)copie).setMatrice(tempMatrice);
+        }
+    }
+
     @Override
     public void eclaircir_noircir(int v) {
         for (int i = 0; i < hauteur; i++) {
@@ -237,7 +267,59 @@ public class ImagePPM extends Image {
      */
     @Override
     public Image reduire() {
-        return null;
+
+        if (this.hauteur <= 2 || this.largeur <= 2) {
+            //throw new ExpectionImageTooSmall;
+        }
+
+        int nouvelleHauteur = this.hauteur / 2;
+        int nouvelleLargeur = this.largeur / 2;
+
+        if (nouvelleHauteur % 2 != 0) { nouvelleHauteur--; }
+        if (nouvelleLargeur % 2 != 0) { nouvelleLargeur--; }
+
+//                +----++---+
+//                |  1 |  2 |
+//                |    |    |
+//                +----+----+
+//                |  3 | 4  |
+//                |    |    |
+//                +----+----+
+
+
+        PixelPPM[][] tempMatrice = new  PixelPPM[nouvelleHauteur][nouvelleLargeur];
+        for (int i = 0; i < this.hauteur; i += 2) { //parcours la matrice a bonds de 2 pour pouvoir calculer la moyenne d'un carree 2x2
+            for (int j = 0; j < this.largeur; j += 2) {
+                int moyenneRouge = 0;
+                int moyenneVert = 0;
+                int moyenneBleu = 0;
+
+                int multiplicateur = 0;
+
+                for (int k = i; k < i + 2; k++) {
+                    for (int l = j; l < j + 2; l++) {
+                        moyenneRouge += this.matrice[k][l].getRouge();
+                        moyenneVert += this.matrice[k][l].getVert();
+                        moyenneBleu += this.matrice[k][l].getBleu();
+
+                        multiplicateur += 1;
+
+                    }
+                }
+
+                moyenneRouge = moyenneRouge / multiplicateur;
+                moyenneVert = moyenneVert / multiplicateur;
+                moyenneBleu = moyenneBleu / multiplicateur;
+
+                tempMatrice[i / 2][j / 2] = new PixelPPM(i, j, moyenneRouge, moyenneVert, moyenneBleu);
+            }
+        }
+
+        this.matrice = tempMatrice;
+        this.hauteur = nouvelleHauteur;
+        this.largeur = nouvelleLargeur;
+
+        return this;
     }
 
     /**

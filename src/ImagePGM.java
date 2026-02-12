@@ -2,18 +2,15 @@ import exceptions.ExceptionEcritureImage;
 import exceptions.ExceptionImagesIdentiques;
 import exceptions.ExceptionLectureImage;
 
-/**
- * Implémentation de la bibliothèque pour image avec tons de gris
- * @author Antony, Abdoulaye et Sèdrick
- */
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
 
-
+/**
+ * Implémentation de la bibliothèque pour image avec tons de gris
+ * @author Antony, Abdoulaye et Sèdrick
+ */
 public class ImagePGM extends Image {
 
     private int largeur;
@@ -132,6 +129,39 @@ public class ImagePGM extends Image {
 
     }
 
+
+    /**
+     * Copie l'image pour en faire une deuxième identique à la première
+     * @param copie L'image copier
+     */
+    @Override
+    public void copier(Image copie) throws ExceptionImagesIdentiques {
+
+        if (this.sont_identiques(copie)) {
+            throw  new ExceptionImagesIdentiques("les deux images sont identiques");
+        }
+        else if (this.getClass() != copie.getClass()) {
+            //throw new ExceptionImageClassIncompatible("Les images sont incompatibles") <-- a creer
+        }
+        else{
+
+            PixelPGM[][] tempMatrice = new PixelPGM[this.getHauteur()][this.getLargeur()];
+            for (int i = 0; i < this.getHauteur(); i++) {
+                for (int j = 0; j < this.getLargeur(); j++) {
+                    tempMatrice[i][j] =
+                            new PixelPGM(this.getMatrice()[i][j].getLigne(),
+                                    this.getMatrice()[i][j].getColonne(),
+                                    this.getMatrice()[i][j].getTeinte());
+                }
+            }
+
+            ((ImagePGM) copie).setMatrice(tempMatrice);
+            ((ImagePGM) copie).largeur = this.getLargeur();
+            ((ImagePGM) copie).hauteur = this.getHauteur();
+            ((ImagePGM) copie).valeurMax = this.getValeurMax();
+        }
+    }
+
     @Override
     public void eclaircir_noircir(int v) {
         if (v > this.valeurMax / 2) v = this.valeurMax / 2;
@@ -248,15 +278,11 @@ public class ImagePGM extends Image {
                     for (int l = j; l < j + 2; l++) {
                         moyenneTeinte += this.matrice[k][l].getTeinte();
                         multiplicateur += 1;
-                        System.out.println("Moyenne teinte: " + moyenneTeinte + " multiplicateur: " + multiplicateur);
-                        System.out.println("PositionX: " + i + " PositionY: " + j); // debogage
                     }
                 }
                 moyenneTeinte = moyenneTeinte/multiplicateur;
 
                 tempMatrice[i / 2][j / 2] = new PixelPGM(i, j, moyenneTeinte);
-
-                System.out.println("Moyenne teinte: " + moyenneTeinte + " multiplicateur: " + multiplicateur);
             }
         }
 

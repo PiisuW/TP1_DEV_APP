@@ -24,11 +24,11 @@ public class Main {
             System.out.println("Rotation de 90 terminee");
 
             // Test luminosité (Éclaircir : on passe une valeur négative)
-            ImagePGM pgmCopie = new ImagePGM(pgm.getLargeur(), pgm.getHauteur(), pgm.getValeurMax());
-            Image.copier(pgm, pgmCopie);
-            pgmCopie.eclaircir_noircir(-100);
-            pgmCopie.ecrire("Sherbrooke_Version_MODIFIER.pgm");
-            System.out.println("Image eclaircie terminer");
+//            ImagePGM pgmCopie = new ImagePGM(pgm.getLargeur(), pgm.getHauteur(), pgm.getValeurMax());
+//            Image.copier(pgm, pgmCopie);
+//            pgmCopie.eclaircir_noircir(-100);
+//            pgmCopie.ecrire("Sherbrooke_Version_MODIFIER.pgm");
+//            System.out.println("Image eclaircie terminer");
 
             // TEST PPM
             ImagePPM ppm = new ImagePPM(0, 0, 0);
@@ -36,9 +36,9 @@ public class Main {
             System.out.println("TEST PPM");
 
             // Test sont_identiques avec une copie
-            ImagePPM ppmCopie = new ImagePPM(ppm.getLargeur(), ppm.getHauteur(), ppm.getValeurMax());
-            Image.copier(ppm, ppmCopie);
-            System.out.println("Les images sont identiques ? " + ppm.sont_identiques(ppmCopie));
+//            ImagePPM ppmCopie = new ImagePPM(ppm.getLargeur(), ppm.getHauteur(), ppm.getValeurMax());
+//            Image.copier(ppm, ppmCopie);
+//            System.out.println("Les images sont identiques ? " + ppm.sont_identiques(ppmCopie));
 
             // Test couleur prépondérante
             Pixel pMaxCoul = ppm.couleur_preponderante();
@@ -49,9 +49,9 @@ public class Main {
             System.err.println("ERREUR DE LECTURE : " + e.getMessage());
         } catch (ExceptionEcritureImage e) {
             System.err.println("Erreur lors de l'écriture : " + e.getMessage());
-        } catch (ExceptionImagesIdentiques e) {
-            System.err.println("Erreur lors d'identification : " + e.getMessage());
-        }
+//        } catch (ExceptionImagesIdentiques e) {
+//            System.err.println("Erreur lors d'identification : " + e.getMessage());
+       }
 
 
     }

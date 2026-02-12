@@ -27,56 +27,10 @@ public abstract class Image {
     // Traitement
     /**
      * Copie l'image pour en faire une deuxième identique à la première
-     * Cree des nouveaux pixels a partir des valeurs des pixel de l'objet copie1 passe en parametre pour ensuite creer une nouvelle matrice selon le type d'image
-     * @param copie1 L'objet {@link Image} source de la copie
-     * @param copie2 L'objet {@link Image} destination de la copie
+     * Cree des nouveaux pixels a partir des valeurs des pixel de l'objet pour ensuite creer une nouvelle matrice selon le type d'image
+     * @param copie L'objet {@link Image} image resultat de la copie
      */
-    public static void copier(Image copie1, Image copie2)
-            throws ExceptionImagesIdentiques {
-
-        if (copie1.sont_identiques(copie2)) {
-            throw  new ExceptionImagesIdentiques("les deux images sont identiques");
-        }
-        else if (copie1.getClass() != copie2.getClass()) {
-            //throw new ExceptionImageClassIncompatible("Les images sont incompatibles") <-- a creer
-        }
-        else{
-
-            int copie1Hauteur = copie1.getHauteur();
-            int copie1Largeur = copie1.getLargeur();
-
-            if (copie1.getClass() == ImagePGM.class) {
-                PixelPGM[][] tempMatrice = new PixelPGM[copie1Hauteur][copie1Largeur];
-
-                for (int i = 0; i < copie1Hauteur; i++) {
-                    for (int j = 0; j < copie1Largeur; j++) {
-                        tempMatrice[i][j] =
-                                new PixelPGM(((ImagePGM) copie1).getMatrice()[i][j].getLigne(),
-                                ((ImagePGM) copie1).getMatrice()[i][j].getColonne(),
-                                ((ImagePGM) copie1).getMatrice()[i][j].getTeinte());
-                    }
-                }
-
-                ((ImagePGM) copie2).setMatrice(tempMatrice);
-            }
-            else if (copie1.getClass() == ImagePPM.class) {
-                PixelPPM[][] tempMatrice = new PixelPPM[copie1Hauteur][copie1Largeur];
-
-                for (int i = 0; i < copie1Hauteur; i++) {
-                    for (int j = 0; j < copie1Largeur; j++) {
-                        tempMatrice[i][j] =
-                                new PixelPPM(((ImagePPM) copie1).getMatrice()[i][j].getLigne(),
-                                        ((ImagePPM) copie1).getMatrice()[i][j].getColonne(),
-                                        ((ImagePPM) copie1).getMatrice()[i][j].getRouge(),
-                                        ((ImagePPM) copie1).getMatrice()[i][j].getVert(),
-                                        ((ImagePPM) copie1).getMatrice()[i][j].getBleu());
-                    }
-                }
-
-                ((ImagePPM) copie2).setMatrice(tempMatrice);
-            }
-        }
-    }
+    public abstract void copier(Image copie) throws ExceptionImagesIdentiques;
 
     /**
      * Modifie la luminosité : un v positif assombrit et v négatif éclaircit
