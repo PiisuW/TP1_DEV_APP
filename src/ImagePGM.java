@@ -226,8 +226,8 @@ public class ImagePGM extends Image {
         int nouvelleHauteur = this.hauteur / 2;
         int nouvelleLargeur = this.largeur / 2;
 
-        if (nouvelleHauteur % 2 != 0) { nouvelleHauteur++; }
-        if (nouvelleLargeur % 2 != 0) { nouvelleLargeur++; }
+        if (nouvelleHauteur % 2 != 0) { nouvelleHauteur--; }
+        if (nouvelleLargeur % 2 != 0) { nouvelleLargeur--; }
 
 //                +----++---+
 //                |  1 |  2 |
@@ -239,43 +239,32 @@ public class ImagePGM extends Image {
 
 
         PixelPGM[][] tempMatrice = new  PixelPGM[nouvelleHauteur][nouvelleLargeur];
-        for (int i = 0; i < this.hauteur; i++) {
-            for (int j = 0; j < this.largeur; j++) {
-                if (j < nouvelleLargeur && i < nouvelleHauteur) { // Quadrant 1
-                    int moyenne teinte
-                    for (int k = 0; k < nouvelleHauteur; k++) {
-                        for (int l = 0; l < nouvelleLargeur; l++) {
+        for (int i = 0; i < this.hauteur; i += 2) { //parcours la matrice a bonds de 2 pour pouvoir calculer la moyenne d'un carree 2x2
+            for (int j = 0; j < this.largeur; j += 2) {
+                int moyenneTeinte = 0;
+                int multiplicateur = 0;
 
-                        }
+                for (int k = i; k < i + 2; k++) {
+                    for (int l = j; l < j + 2; l++) {
+                        moyenneTeinte += this.matrice[k][l].getTeinte();
+                        multiplicateur += 1;
+                        System.out.println("Moyenne teinte: " + moyenneTeinte + " multiplicateur: " + multiplicateur);
+                        System.out.println("PositionX: " + i + " PositionY: " + j); // debogage
                     }
-
-                } else if (j >= nouvelleLargeur && i < nouvelleHauteur) { // Quadrant 2
-
-                    for (int k = 0; k < nouvelleHauteur; k++) {
-                        for (int l = nouvelleLargeur; l < this.largeur; l++) {
-
-                        }
-                    }
-
-                } else if (j < nouvelleLargeur && i >= nouvelleHauteur) { // Quadrant 3
-
-                    for (int k = nouvelleHauteur; k < this.hauteur; k++) {
-                        for (int l = 0; l < nouvelleLargeur; l++) {
-
-                        }
-                    }
-
-                } else if (j >= nouvelleLargeur && i >= nouvelleHauteur) { // Quadrant 4
-
-                    for (int k = nouvelleHauteur; k < this.hauteur; k++) {
-                        for (int l = nouvelleLargeur; l < this.largeur; l++) {
-
-                        }
-                    }
-
                 }
+                moyenneTeinte = moyenneTeinte/multiplicateur;
+
+                tempMatrice[i / 2][j / 2] = new PixelPGM(i, j, moyenneTeinte);
+
+                System.out.println("Moyenne teinte: " + moyenneTeinte + " multiplicateur: " + multiplicateur);
             }
         }
+
+        this.matrice = tempMatrice;
+        this.hauteur = nouvelleHauteur;
+        this.largeur = nouvelleLargeur;
+
+        return  this;
     }
 
     /**
