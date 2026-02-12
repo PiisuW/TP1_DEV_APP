@@ -227,7 +227,26 @@ public class ImagePPM extends Image {
      */
     @Override
     public Image extraire(int p1, int c1, int p2, int c2) {
-        return null;
+        if (p2 >= hauteur) {
+            p2 = hauteur - 1;
+        }
+        if (c2 >= largeur) {
+            c2 =largeur - 1;
+        }
+
+        int newHauteur = p2 - p1 + 1;
+        int newlargeur = c2 - c1 + 1;
+
+        ImagePPM extraite = new ImagePPM(newlargeur, newHauteur, this.valeurMax);
+
+        for (int i = 0; i < newHauteur; i++) {
+            for (int j = 0; j < newlargeur; j++) {
+                PixelPPM p = this.matrice[p1 + i][c1 + j];
+                extraite.getMatrice()[i][j] = new PixelPPM(i,j,p.getRouge(), p.getVert(), p.getBleu());
+            }
+        }
+
+        return extraite;
     }
 
     /**

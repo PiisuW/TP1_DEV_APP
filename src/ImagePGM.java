@@ -210,7 +210,32 @@ public class ImagePGM extends Image {
      */
     @Override
     public Image extraire(int p1, int c1, int p2, int c2){
-        return null;
+
+        if (p2 >= hauteur) {
+            p2 = hauteur -1;
+        }
+        if (c2 >= largeur) {
+            c2 = largeur -1;
+        }
+
+
+        int newHauteur = p2 - p1 + 1;
+        int newLargeur = c2 - c1 + 1;
+
+
+        ImagePGM extraite = new ImagePGM(newLargeur, newHauteur, this.valeurMax);
+
+
+        for (int i = 0; i < newHauteur; i++) {
+            for (int j = 0; j < newLargeur; j++) {
+
+                int teinte = this.matrice[p1 + i][c1 + j].getTeinte();
+
+
+                extraite.getMatrice()[i][j] = new PixelPGM(i,j,teinte);
+            }
+        }
+        return extraite;
     }
 
     /**
