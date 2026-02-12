@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
+import java.util.HashMap;
 
 /**
  * Implémentation de la bibliothèque pour les images en couleurs
@@ -85,6 +86,19 @@ public class ImagePPM extends Image {
             throw new ExceptionLectureImage("Impossible de lire dans le fichier : " + e.getMessage());
         }
 
+                int r = p.getRouge() - v;
+                int g = p.getVert()  - v;
+                int b = p.getBleu()  - v;
+
+                if (r < 0) r = 0; if (r > valeurMax) r = valeurMax;
+                if (g < 0) g = 0; if (g > valeurMax) g = valeurMax;
+                if (b < 0) b = 0; if (b > valeurMax) b = valeurMax;
+
+                p.setRouge(r);
+                p.setVert(g);
+                p.setBleu(b);
+            }
+        }
     }
 
     @Override
@@ -134,77 +148,127 @@ public class ImagePPM extends Image {
 
     @Override
     public void eclaircir_noircir(int v) {
+        for (int i = 0; i < hauteur; i++) {
+            for (int j = 0; j < largeur; j++) {
 
-    }
+                PixelPPM p = matrice[i][j];
 
-    /**
-     * Cree une nouvelle matrice temporaire 2 dimensions de {@link PixelPPM} en inversant hauteur/largeur
-     * Insere ensuite les donnees de la matrice actuelle de l'image vers la matrice temporaire en modifiant la position des pixels
-     * La matrice temporaire devient donc une nouvelle matrice identique a l'ancienne, mais ayant subit une rotation de 90 degres vers la gauche
-     * La matrice temporaire devient la nouvelle matrice de l'image de l'objet
-     */
-    @Override
-    public void pivoter90(){
-        int nouvelleLargeur = this.hauteur;
-        int nouvelleHauteur = this.largeur;
+            }
 
-        PixelPPM[][] tempMatrice = new PixelPPM[nouvelleHauteur][nouvelleLargeur];
-        for (int i = 0; i < nouvelleHauteur; i++) {
-            for (int j = 0; j < nouvelleLargeur; j++) {
-                tempMatrice[i][j] =
-                        new PixelPPM(   //Accede la position du pixel correspondant dans l'ancienne matrice
-                                i,
-                                j,
-                                this.matrice[j][this.largeur - 1 - i].getRouge(),
-                                this.matrice[j][this.largeur - 1 - i].getVert(),
-                                this.matrice[j][this.largeur - 1 - i].getBleu());
+            /**
+             * Cree une nouvelle matrice temporaire 2 dimensions de {@link PixelPPM} en inversant hauteur/largeur
+             * Insere ensuite les donnees de la matrice actuelle de l'image vers la matrice temporaire en modifiant la position des pixels
+             * La matrice temporaire devient donc une nouvelle matrice identique a l'ancienne, mais ayant subit une rotation de 90 degres vers la gauche
+             * La matrice temporaire devient la nouvelle matrice de l'image de l'objet
+             */
+            @Override
+            public void pivoter90 () {
+                int nouvelleLargeur = this.hauteur;
+                int nouvelleHauteur = this.largeur;
+
+                PixelPPM[][] tempMatrice = new PixelPPM[nouvelleHauteur][nouvelleLargeur];
+                for (int i = 0; i < nouvelleHauteur; i++) {
+                    for (int j = 0; j < nouvelleLargeur; j++) {
+                        tempMatrice[i][j] =
+                                new PixelPPM(   //Accede la position du pixel correspondant dans l'ancienne matrice
+                                        i,
+                                        j,
+                                        this.matrice[j][this.largeur - 1 - i].getRouge(),
+                                        this.matrice[j][this.largeur - 1 - i].getVert(),
+                                        this.matrice[j][this.largeur - 1 - i].getBleu());
+                    }
+                }
+
+                this.matrice = tempMatrice;
+
+                this.hauteur = nouvelleHauteur;
+                this.largeur = nouvelleLargeur;
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public boolean sont_identiques (Image autre){
+                if (!(autre instanceof ImagePPM)) return false;
+
+                ImagePPM img = (ImagePPM) autre;
+
+                if (this.largeur != img.largeur) return false;
+                if (this.hauteur != img.hauteur) return false;
+                if (this.valeurMax != img.valeurMax) return false;
+
+                for (int i = 0; i < hauteur; i++) {
+                    for (int j = 0; j < largeur; j++) {
+
+                        PixelPPM p1 = this.matrice[i][j];
+                        PixelPPM p2 = img.matrice[i][j];
+
+                        if (p1.getRouge() != p2.getRouge()) return false;
+                        if (p1.getVert() != p2.getVert()) return false;
+                        if (p1.getBleu() != p2.getBleu()) return false;
+                    }
+                }
+
+                return true;
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Image extraire ( int p1, int c1, int p2, int c2){
+                return null;
+            }
+
+            /**
+             * Réduit l'image en calculant la moyenne de rouge, vert et bleu
+             * @return Une nouvelle image réduite par la moyenne
+             */
+            @Override
+            public Image reduire () {
+                return null;
+            }
+
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Pixel couleur_preponderante () {
+                HashMap<String, Integer> compteur = new HashMap<>();
+
+                int maxCount = -1;
+                int bestI = 0;
+                int bestJ = 0;
+
+                for (int i = 0; i < hauteur; i++) {
+                    for (int j = 0; j < largeur; j++) {
+
+                        PixelPPM p = matrice[i][j];
+
+                        String cle = p.getRouge() + "-" +
+                                p.getVert() + "-" +
+                                p.getBleu();
+
+                        int count = compteur.getOrDefault(cle, 0) + 1;
+                        compteur.put(cle, count);
+
+                        if (count > maxCount) {
+                            maxCount = count;
+                            bestI = i;
+                            bestJ = j;
+                        }
+                    }
+                }
+
+                return matrice[bestI][bestJ];
+            }
+
+            public PixelPPM[][] getMatrice () {
+                return matrice;
+            }
+
+            public void setMatrice (PixelPPM[][]matrice){
+                this.matrice = matrice;
             }
         }
-
-        this.matrice = tempMatrice;
-
-        this.hauteur = nouvelleHauteur;
-        this.largeur = nouvelleLargeur;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean sont_identiques(Image autre){
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Image extraire(int p1, int c1, int p2, int c2){
-        return null;
-    }
-
-    /**
-     * Réduit l'image en calculant la moyenne de rouge, vert et bleu
-     * @return Une nouvelle image réduite par la moyenne
-     */
-    @Override
-    public Image reduire(){
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Pixel couleur_preponderante(){
-        return null;
-    }
-
-    public PixelPPM[][] getMatrice(){
-        return matrice;
-    }
-
-    public void setMatrice(PixelPPM[][] matrice){
-        this.matrice = matrice;
-    }
-}
