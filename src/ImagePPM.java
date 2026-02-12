@@ -98,8 +98,6 @@ public class ImagePPM extends Image {
                 p.setVert(g);
                 p.setBleu(b);
             }
-        }
-    }
 
     @Override
     public void ecrire(String fichier) throws ExceptionEcritureImage {
@@ -272,3 +270,6 @@ public class ImagePPM extends Image {
                 this.matrice = matrice;
             }
         }
+    }
+    }
+
