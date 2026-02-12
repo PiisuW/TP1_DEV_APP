@@ -33,6 +33,14 @@ public class ImagePPM extends Image {
         this.matrice = new PixelPPM[hauteur][largeur];
     }
 
+    ImagePPM() {
+        this.hauteur = 0;
+        this.largeur = 0;
+        this.valeurMax = MAX_VALEUR_LIMITE;
+        this.matrice = new PixelPPM[hauteur][largeur];
+
+    }
+
     @Override public int getLargeur() {
         return largeur;
     }
@@ -111,7 +119,7 @@ public class ImagePPM extends Image {
                     for (int valeur : couleurs) {
                         String s = valeur + " ";
 
-                        if (nbCaracteresLigne + s.length() > 70) {
+                        if (nbCaracteresLigne + s.length() > LIMITE_LIGNE_ASCII) {
                             pw.print("\n");
                             nbCaracteresLigne = 0;
                         }

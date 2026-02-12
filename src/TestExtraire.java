@@ -6,7 +6,7 @@ public class TestExtraire {
     public static void main(String[] args) {
         try {
             // Extraction PGM
-            ImagePGM pgm = new ImagePGM(0,0,0);
+            ImagePGM pgm = new ImagePGM();
             pgm.lire("Sherbrooke_COPIE_de_copie.pgm");
             System.out.println("Dimension original: " + pgm.getLargeur() + "x" + pgm.getHauteur());
 
@@ -22,7 +22,7 @@ public class TestExtraire {
             System.out.println("Extraction sauvegarder dans 'Sherbrooke_EXTRAIT_TEST.pgm");
 
             // Extraction PPM
-            ImagePPM ppm = new ImagePPM(0,0,0);
+            ImagePPM ppm = new ImagePPM();
             ppm.lire("Sherbrooke_COPIE_COULEUR.ppm");
             System.out.println("Dimension original: " + ppm.getLargeur() + "x" + ppm.getHauteur());
 

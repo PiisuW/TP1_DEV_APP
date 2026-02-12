@@ -35,6 +35,14 @@ public class ImagePGM extends Image {
         this.matrice = new PixelPGM[hauteur][largeur];
     }
 
+    ImagePGM() {
+        this.hauteur = 0;
+        this.largeur = 0;
+        this.valeurMax = MAX_VALEUR_LIMITE;
+        this.matrice = new PixelPGM[hauteur][largeur];
+
+    }
+
    @Override public int getLargeur() {
         return largeur;
     }
@@ -112,7 +120,7 @@ public class ImagePGM extends Image {
 
                     String s = this.matrice[i][j].getTeinte() + " ";
 
-                    if (nbCaracteresLigne + s.length() > 70) {
+                    if (nbCaracteresLigne + s.length() > LIMITE_LIGNE_ASCII) {
                         pw.print("\n");
                         nbCaracteresLigne = 0;
                     }
