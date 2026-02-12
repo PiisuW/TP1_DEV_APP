@@ -13,7 +13,7 @@ public class TestsPivoter90 {
 
             // Test pivotement
             ImagePGM pgmCopie = new ImagePGM(pgm.getLargeur(), pgm.getHauteur(), pgm.getValeurMax());
-            Image.copier(pgm, pgmCopie);
+            pgm.copier(pgmCopie);
             pgmCopie.pivoter90();
             pgmCopie.ecrire("Sherbrooke_Pivoter90.pgm");
             System.out.println("Rotation de 90 terminee");
@@ -26,7 +26,7 @@ public class TestsPivoter90 {
 
             // Test pivotement
             ImagePPM ppmCopie = new ImagePPM(ppm.getLargeur(), ppm.getHauteur(), pgm.getValeurMax());
-            Image.copier(ppm, ppmCopie);
+            ppm.copier(ppmCopie);
             ppmCopie.pivoter90();
             ppmCopie.ecrire("Sherbrooke_Pivoter90.ppm");
             System.out.println("Rotation de 90 terminee");
