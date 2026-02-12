@@ -85,19 +85,7 @@ public class ImagePPM extends Image {
         } catch (IOException e) {
             throw new ExceptionLectureImage("Impossible de lire dans le fichier : " + e.getMessage());
         }
-
-                int r = p.getRouge() - v;
-                int g = p.getVert()  - v;
-                int b = p.getBleu()  - v;
-
-                if (r < 0) r = 0; if (r > valeurMax) r = valeurMax;
-                if (g < 0) g = 0; if (g > valeurMax) g = valeurMax;
-                if (b < 0) b = 0; if (b > valeurMax) b = valeurMax;
-
-                p.setRouge(r);
-                p.setVert(g);
-                p.setBleu(b);
-            }
+    }
 
     @Override
     public void ecrire(String fichier) throws ExceptionEcritureImage {
@@ -150,8 +138,24 @@ public class ImagePPM extends Image {
             for (int j = 0; j < largeur; j++) {
 
                 PixelPPM p = matrice[i][j];
+                int r = p.getRouge() - v;
+                int g = p.getVert() - v;
+                int b = p.getBleu() - v;
+
+                if (r < 0) r = 0;
+                if (r > valeurMax) r = valeurMax;
+                if (g < 0) g = 0;
+                if (g > valeurMax) g = valeurMax;
+                if (b < 0) b = 0;
+                if (b > valeurMax) b = valeurMax;
+
+                p.setRouge(r);
+                p.setVert(g);
+                p.setBleu(b);
 
             }
+        }
+    }
 
             /**
              * Cree une nouvelle matrice temporaire 2 dimensions de {@link PixelPPM} en inversant hauteur/largeur
@@ -270,6 +274,5 @@ public class ImagePPM extends Image {
                 this.matrice = matrice;
             }
         }
-    }
-    }
+
 

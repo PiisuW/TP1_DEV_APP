@@ -167,11 +167,7 @@ public class ImagePGM extends Image {
         this.largeur = nouvelleLargeur;
     }
 
-            }
-        }
 
-        return true;
-    }
 
     /**
      * {@inheritDoc}
@@ -193,6 +189,11 @@ public class ImagePGM extends Image {
                         != img.matrice[i][j].getTeinte()) {
                     return false;
                 }
+            }
+        }
+
+        return true;
+    }
 
     /**
      * {@inheritDoc}
