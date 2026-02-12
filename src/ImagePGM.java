@@ -170,12 +170,68 @@ public class ImagePGM extends Image {
     }
 
     /**
-     * Réduit la taille de l'image en calculant moyenne des teintes de gris
+     * Réduit la taille de l'image en calculant la moyenne des teintes de gris
      * @return Une nouvelle ImagePGM réduite
      */
     @Override
     public Image reduire(){
-        return null;
+        if (this.hauteur <= 2 || this.largeur <= 2) {
+            //throw new ExpectionImageTooSmall;
+        }
+
+        int nouvelleHauteur = this.hauteur / 2;
+        int nouvelleLargeur = this.largeur / 2;
+
+        if (nouvelleHauteur % 2 != 0) { nouvelleHauteur++; }
+        if (nouvelleLargeur % 2 != 0) { nouvelleLargeur++; }
+
+//                +----++---+
+//                |  1 |  2 |
+//                |    |    |
+//                +----+----+
+//                |  3 | 4  |
+//                |    |    |
+//                +----+----+
+
+
+        PixelPGM[][] tempMatrice = new  PixelPGM[nouvelleHauteur][nouvelleLargeur];
+        for (int i = 0; i < this.hauteur; i++) {
+            for (int j = 0; j < this.largeur; j++) {
+                if (j < nouvelleLargeur && i < nouvelleHauteur) { // Quadrant 1
+                    int moyenne teinte
+                    for (int k = 0; k < nouvelleHauteur; k++) {
+                        for (int l = 0; l < nouvelleLargeur; l++) {
+
+                        }
+                    }
+
+                } else if (j >= nouvelleLargeur && i < nouvelleHauteur) { // Quadrant 2
+
+                    for (int k = 0; k < nouvelleHauteur; k++) {
+                        for (int l = nouvelleLargeur; l < this.largeur; l++) {
+
+                        }
+                    }
+
+                } else if (j < nouvelleLargeur && i >= nouvelleHauteur) { // Quadrant 3
+
+                    for (int k = nouvelleHauteur; k < this.hauteur; k++) {
+                        for (int l = 0; l < nouvelleLargeur; l++) {
+
+                        }
+                    }
+
+                } else if (j >= nouvelleLargeur && i >= nouvelleHauteur) { // Quadrant 4
+
+                    for (int k = nouvelleHauteur; k < this.hauteur; k++) {
+                        for (int l = nouvelleLargeur; l < this.largeur; l++) {
+
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     /**
