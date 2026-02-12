@@ -188,8 +188,15 @@ public class ImagePGM extends Image {
         for (int i = 0; i < hauteur; i++) {
             for (int j = 0; j < largeur; j++) {
 
-                if (this.matrice[i][j].getTeinte()
-                        != img.matrice[i][j].getTeinte()) {
+                PixelPGM p1 = this.matrice[i][j];
+                PixelPGM p2 = img.matrice[i][j];
+
+                if (p1 == null || p2 == null) {
+                    if (p1 != p2) return false;
+                    continue;
+                }
+
+                if (p1.getTeinte() != p2.getTeinte()) {
                     return false;
                 }
             }

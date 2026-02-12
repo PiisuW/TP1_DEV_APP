@@ -24,8 +24,10 @@ public class Main {
             System.out.println("Rotation de 90 terminee");
 
             // Test luminosité (Éclaircir : on passe une valeur négative)
-            pgm.eclaircir_noircir(-50);
-            pgm.ecrire("Sherbrooke_COPIE_de_copie.pgm");
+            ImagePGM pgmCopie = new ImagePGM(pgm.getLargeur(), pgm.getHauteur(), pgm.getValeurMax());
+            Image.copier(pgm, pgmCopie);
+            pgmCopie.eclaircir_noircir(-100);
+            pgmCopie.ecrire("Sherbrooke_Version_MODIFIER.pgm");
             System.out.println("Image eclaircie terminer");
 
             // TEST PPM
